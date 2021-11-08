@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+       .column {
+           
+           
+
+
+  float: left;
+  width: 60%;
+  padding: 10px;
+  height:800px; 
+  
+}
+th.fname{
+    text-indent: 1.5ex;
+}
+th.roll{
+    text-indent: 1.5ex;
+}
+th.againfill{
+    text-indent: 1.5ex;
+}
+h4.by{
+    text-indent: 6.5ex;
+}
+
+
+</style>
+<body>
+
+
+      
+    <div class="column" style="background-color:rgb(0, 0, 0); ">
+    
+        <div class="container my-5" >
+            <div class="row">
+                <div class="col-md-10 m-auto bg-light p-5"  > 
+                    <div class="d-flex justify-content-between"></div>
+              <div>
+                  <h2   style="color: royalblue"><u>Assignment  </u>   <h2> 
+                    <h4 class="by" style="color: royalblue "><u>By</u>     <h4>                        
+                  <h2 style="color:royalblue"> <u>Syed Abdullah Raza</u></h2>                            
+              </div>
+          </div>
+          <hr class="my-4">
+          <div class="d-flex"></div>
+              <div style="width: 30%;"></div>
+            
+                  <h2 style= "color:yellowgreen  " >Student Form</h2>
+              
+          
+          <hr class="my-2" >
+          <div class="row">
+              <div class="col-md-6" >
+                  <label for="add_num1" style="color: white;" >Student Name:</label>
+                  <input type="text"  class="form-control" id="student_name" >
+              </div>
+              <div class="col-md-6">
+                  <label for="add_num2" style="color: whitesmoke;">Father Name:</label>
+                  <input type="text" class="form-control" id="father_name">
+              </div>
+              
+              <div class="col-md-6">
+                  <label for="add_num2" style="color: whitesmoke;">Roll No:</label>
+                  <b><input type="text" class="form-control" id="rollno" ></b>
+                  <input type="hidden" class="form-control" id="student_id">
+              </div>
+          </div>
+        
+                <div class="row">
+                    <div class="modal-footer"> 
+              
+                  <button class="btn btn-primary" style="margin-top: 30px;" onclick="post_create();">Create Post Request</button>
+                  <button class="btn btn-success" style="margin-top: 30px;" onclick="get_all();">Get All Student</button>
+                  <button class="btn btn-warning" style="margin-top: 30px;" onclick="update_student();">Update Student</button>
+                  
+              </div>
+          </div> 
+           <div class="row">
+              <div class="col-md-12" id="Divusers">
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+
+                  <table class="table" >
+                      <thead >
+                          <tr>
+                          <th  style="color:cornsilk ">Student Name</th>
+                          <th class="fname" style="color:cornsilk">Father Name</th>
+                        
+                          <th class="roll" style="color:cornsilk">Roll No</th>
+                          <th class="againfill" style="color:cornsilk">Again fill</th>
+                      </tr>
+                      </thead>
+                      <tbody  id="tblper" style="color: azure;"> 
+                        
+                      </tbody>                            
+                  </table>
+              </div>               
+          </div>
+      </div>
+  </div>
+</div> 
+</div>
+</div>
+
+</body> 
+
+
+   
+
+   <script>
+
+function post_create(){
+    let student_name = document.getElementById('student_name').value
+    let father_name = document.getElementById('father_name').value;
+    
+    let roll_no = document.getElementById('rollno').value;
+
+    axios.post('https://fast-ocean-14980.herokuapp.com/user', {
+        student_name: student_name,
+        father_name: father_name,
+        rollno:roll_no
+          })
+      .then(function (response) {
+        console.log(response);
+        alert(response.data)
+        document.getElementById('student_name').value='';
+        document.getElementById('father_name').value='';
+        document.getElementById('rollno').value='';  
+          
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      }
+       
+      
+      function get_all(){
+    axios.get('https://fast-ocean-14980.herokuapp.com/users')
+  .then(function (response) {
+      $html='';
+    console.log(response);
+    var i=0;
+    response.data.forEach(function(data) {
+        if(data.student_name != undefined){
+        $html += '<tr >';
+        $html += '<td id="student_name_'+i+'" > '+data.student_name+'</td>';
+        $html += '<td id="father_name_'+i+'"> '+data.father_name+'</td>';
+        $html += '<td id="rollno_'+i+'"> '+data.rollno+'</td>';
+        $html += '<td><a href="javascript:void(0)" onclick="get_record(this);" id='+i+'>FILL</td>';
+        $html += '</tr>';
+        }
+        i++;
+    });
+    console.log($html);
+    console.log(document.getElementById('tblper'));
+    document.getElementById('tblper').innerHTML = $html;
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .then(function () {
+    // always executed
+  });
+}
+function get_record($obj){
+    var id = $obj.getAttribute('id');
+    id = parseInt(id);
+    let student_name = document.getElementById('student_name_'+id).innerHTML;
+    let father_name = document.getElementById('father_name_'+id).innerHTML
+    let roll_no = document.getElementById('rollno_'+id).innerHTML;
+
+    console.log(student_name,father_name,id,document.getElementById('student_name_'+id));
+
+    document.getElementById('student_name').value=student_name;
+    document.getElementById('father_name').value=father_name;
+    document.getElementById('rollno').value=roll_no;        
+    document.getElementById('student_id').value=id;        
+}
+
+
+function update_student(){
+  let student_name = document.getElementById('student_name').value;
+  console.log(student_name)
+  let father_name = document.getElementById('father_name').value;
+  let roll_no = document.getElementById('rollno').value;
+
+  let id = document.getElementById('student_id').value;
+  axios.put('https://fast-ocean-14980.herokuapp.com/user/'+id, {
+    student_name: student_name,father_name:father_name
+    ,rollno:roll_no
+})
+  .then(response => {
+    alert(response.data)
+  })
+  .catch(error => {
+    console.log(err);
+  });
+}
+
+
+   </script>
+
+
+</html>
